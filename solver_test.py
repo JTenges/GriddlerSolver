@@ -100,9 +100,52 @@ class TestMyGrid(unittest.TestCase):
         myGrid.placeNextBlock(0)
         self.assertEqual(myGrid.grid, [[True, False], [False, False]])
         self.assertEqual(myGrid.remainingRows, [[1]])
+
         myGrid.placeNextBlock(0)
         self.assertEqual(myGrid.grid, [[True, False], [True, False]])
         self.assertEqual(myGrid.remainingRows, [])
+
+    def test_undo(self):
+        columns = [
+            [1],
+            [1]
+        ]
+        rows = [
+            [1],
+            [1]
+        ]
+        myGrid = MyGrid(rows, columns)
+        self.assertEqual(myGrid.grid, [[False, False], [False, False]])
+        self.assertEqual(myGrid.remainingRows, [[1], [1]])
+        myGrid.placeNextBlock(0)
+        self.assertEqual(myGrid.grid, [[True, False], [False, False]])
+        self.assertEqual(myGrid.remainingRows, [[1]])
+
+        myGrid.undo()
+        self.assertEqual(myGrid.grid, [[False, False], [False, False]])
+        self.assertEqual(myGrid.remainingRows, [[1], [1]])
+
+        columns = [
+            [1],
+            [1],
+            [1]
+        ]
+        rows = [
+            [1],
+            [1],
+            [1]
+        ]
+
+        myGrid = MyGrid(rows, columns)
+        self.assertEqual(myGrid.grid, [[False, False, False], [False, False, False], [False, False, False]])
+        self.assertEqual(myGrid.remainingRows, [[1], [1], [1]])
+        myGrid.placeNextBlock(0)
+        myGrid.placeNextBlock(0)
+        myGrid.undo()
+        myGrid.undo()
+        self.assertEqual(myGrid.grid, [[False, False, False], [False, False, False], [False, False, False]])
+        self.assertEqual(myGrid.remainingRows, [[1], [1], [1]])
+
     
     def test_validRowIndexes(self):
         columns = [
@@ -183,7 +226,7 @@ class TestMyGrid(unittest.TestCase):
             [1]
         ]
         myGrid = MyGrid(rows, columns)
-        self.assertEqual(myGrid.isSafePlacement(0), True)
+        self.assertEqual(myGrid.isSafePlacement(0, 1), True)
 
         columns = [
             [1],
@@ -197,7 +240,7 @@ class TestMyGrid(unittest.TestCase):
             [True, False]
         ]
         myGrid = MyGrid(rows, columns, grid=grid)
-        self.assertEqual(myGrid.isSafePlacement(0), False)
+        self.assertEqual(myGrid.isSafePlacement(0, 1), False)
     
     def test_copy(self):
         columns = [
