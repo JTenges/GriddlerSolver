@@ -63,11 +63,28 @@ class MyGrid():
         currentRow = self.grid[rowIndex]
         for i in range(positionInRow, endIndex):
             currentRow[i] = False
-        if rowIndex < self.currentRowIndex:
+        if rowIndex != self.currentRowIndex:
             self.currentRowIndex = rowIndex
             self.remainingRows.insert(0, [])
         self.remainingRows[0].insert(0, endIndex - positionInRow)
 
+    # def isSafePlacement(self, positionInRow: int, blockLength: int):
+    #     gridCopy = self.copy()
+    #     gridCopy.placeNextBlock(positionInRow)
+
+    #     # Check if placement overfills collumn
+    #     columnBlock: List[int] = []
+    #     columnCondition: int = []
+    #     for i in range(positionInRow, positionInRow + blockLength):
+    #         columnBlock = gridCopy.getColumnBlocks(i)
+    #         columnCondition = gridCopy.columnConditions[i]
+    #         if len(columnBlock) > len(columnCondition):
+    #             return False
+    #         for j in range(len(columnBlock)):
+    #             if columnBlock[j] > columnCondition[j]:
+    #                 return False
+    #     return True
+    
     def isSafePlacement(self, positionInRow: int, blockLength: int):
         self.placeNextBlock(positionInRow)
 
@@ -78,12 +95,12 @@ class MyGrid():
             columnBlock = self.getColumnBlocks(i)
             columnCondition = self.columnConditions[i]
             if len(columnBlock) > len(columnCondition):
+                self.undo()
                 return False
             for j in range(len(columnBlock)):
                 if columnBlock[j] > columnCondition[j]:
                     self.undo()
                     return False
-        self.undo()
         return True
 
     
@@ -138,173 +155,10 @@ def isSolvable(myGrid: MyGrid) -> bool:
     blockLength: int = myGrid.remainingRows[0][0]
     for index in validIndexes:
         if myGrid.isSafePlacement(index, blockLength):
-            myGrid.placeNextBlock(index)
             if isSolvable(myGrid):
                 return True
             myGrid.undo()
         
     return False
-
-if __name__ == '__main__':
-    # columns = [
-    #     [1],
-    #     [1],
-    #     [1]
-    # ]
-
-    # rows = [
-    #     [1, 1],
-    #     [1]
-    # ]
-    # myGrid = MyGrid(rows, columns)
-    # isSolvable(myGrid)
-
-    t = time.time()
-
-    columns = [
-        [2],
-        [2, 3],
-        [1, 3, 2],
-        [2, 2, 1],
-        [1, 5, 1],
-        [1, 1, 11],
-        [1, 5, 1],
-        [5, 2],
-        [1, 3, 3],
-        [2, 3],
-    ]
-
-    rows = [
-        [1],
-        [1, 1, 1, 1],
-        [1, 1, 1, 1, 1],
-        [3, 3],
-        [1, 5],
-        [7],
-        [5],
-        [3],
-        [2, 3],
-        [3, 1, 1],
-        [3, 1, 2],
-        [2, 3],
-        [4],
-        [1],
-        [1],
-    ]
-
-    myGrid = MyGrid(rows, columns)
-    isSolvable(myGrid)
-
-    print(time.time() - t)
-
-    # rows = [
-    #     [4],
-    #     [2, 2, 5],
-    #     [3, 3, 2, 2],
-    #     [2, 2, 2, 2, 2],
-    #     [14, 2, 3],
-    #     [6, 1, 5, 5],
-    #     [2, 1, 2, 2, 3, 3, 2],
-    #     [6, 1, 2, 2],
-    #     [1, 3, 1, 2],
-    #     [1, 5, 2],
-    #     [2, 9, 3],
-    #     [1, 1, 4, 8],
-    #     [6, 3, 1, 4],
-    #     [2, 1, 1, 2, 1, 2],
-    #     [5, 2],
-    # ]
-
-    # columns = [
-    #     [1],
-    #     [2],
-    #     [4],
-    #     [4],
-    #     [2],
-    #     [1, 4, 3],
-    #     [4, 4, 2],
-    #     [4, 2, 2],
-    #     [4, 1],
-    #     [4, 4, 2],
-    #     [4, 7],
-    #     [1, 3, 3],
-    #     [2, 3],
-    #     [3, 3],
-    #     [4, 3],
-    #     [2, 3],
-    #     [1, 2],
-    #     [1, 2, 1],
-    #     [2, 2, 4],
-    #     [2, 2, 1, 2],
-    #     [2, 2, 1, 1],
-    #     [2, 2, 4],
-    #     [2, 2, 3],
-    #     [15],
-    #     [15],
-    # ]
-
-    # myGrid = MyGrid(rows, columns)
-    # isSolvable(myGrid)
-    # columns = [
-    #     [8],
-    #     [9],
-    #     [7, 3],
-    #     [8, 2],
-    #     [8, 2],
-    #     [10, 2, 1, 1],
-    #     [9, 5, 2],
-    #     [9, 10],
-    #     [9, 6, 2],
-    #     [9, 11],
-    #     [6, 2, 4, 7, 2],
-    #     [9, 1, 3, 7, 2],
-    #     [13, 9, 1],
-    #     [5, 17, 1],
-    #     [1, 4, 14, 1],
-    #     [2, 4, 12, 1],
-    #     [1, 4, 8],
-    #     [1, 5, 4],
-    #     [1, 5],
-    #     [1, 5],
-    #     [1, 4],
-    #     [1, 4],
-    #     [1, 3],
-    #     [1, 2],
-    #     [1, 1],
-    # ]
-
-    # rows = [
-    #     [5],
-    #     [4, 10],
-    #     [5],
-    #     [15],
-    #     [14],
-    #     [3, 9],
-    #     [4, 7],
-    #     [3, 3],
-    #     [4],
-    #     [4],
-    #     [4, 4],
-    #     [12],
-    #     [5, 5],
-    #     [8, 4],
-    #     [9, 5],
-    #     [16],
-    #     [9, 6],
-    #     [8, 7],
-    #     [8, 7],
-    #     [6, 7],
-    #     [6, 9],
-    #     [4, 9],
-    #     [2, 10],
-    #     [13],
-    #     [4, 5],
-    #     [3, 5],
-    #     [2, 1, 1],
-    #     [1, 1, 1],
-    #     [6],
-    #     [11],
-    # ]
-    # myGrid = MyGrid(rows, columns)
-    # isSolvable(myGrid)
+   
     
